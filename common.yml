@@ -1,0 +1,27 @@
+version: '2.4'
+
+services:
+  web_base:
+    build: ./
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/app
+      - ../mounts/logs:/web/logs
+      - ../mounts/media:/web/media
+      - ../mounts/logs/uwsgi:/web/logs/uwsgi
+      - ../mounts/static:/web/static
+      - ../mounts/ipython_data:/root/.ipython/profile_default
+      - ../mounts/uwsgi:/web/uwsgi/
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+    env_file:
+      - .env
+
+  web_celery_base:
+    extends:
+      service: web_base
+    environment:
+      C_FORCE_ROOT: 1
